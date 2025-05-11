@@ -1,0 +1,39 @@
+<?php
+include 'config.php';
+
+/**
+ * $_SERVER con esta "super-global" detecto con qué método
+ * consultan al servidor.
+ * https://www.php.net/manual/es/reserved.variables.request.php
+ * https://www.php.net/manual/es/language.variables.superglobals.php 
+ */
+
+// Variable superglobal. Mala practica, "horror", ¿inseguro?
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $name = $_POST['fullname'];
+    $email = $_POST['email'];
+    $age = $_POST['age'];
+
+    $sql = "INSERT INTO students (fullname, email, age)
+            VALUES ('$name', '$email', $age)";
+
+    if ($connection->query($sql) === TRUE) {
+        /**
+         * la función header redirige a la página principal index.php
+         * de lo contrario recargaría la misma página.
+         */
+        header("Location: index.php");
+        exit;
+    } else {
+        echo "Error al insertar: " . $connection->error;
+    }
+} //abajo falta doctype y todo eso, y esta fuera del php, funciona igual pero mmmmm
+?>
+
+<h2>Agregar Estudiante</h2>
+<form action="insert.php" method="post">
+    Nombre completo: <input type="text" name="fullname" required><br>
+    Email: <input type="email" name="email" required><br>
+    Edad: <input type="number" name="age" required><br>
+    <input type="submit" value="Guardar">
+</form>
